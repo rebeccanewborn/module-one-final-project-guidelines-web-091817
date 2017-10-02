@@ -1,10 +1,8 @@
-##### gemfile
 require "json"
 require "http"
 require "optparse"
 
 
-##### Adapter
 # Place holders for Yelp Fusion's OAuth 2.0 credentials. Grab them
 # from https://www.yelp.com/developers/v3/manage_app
 CLIENT_ID = "PhbL8wqAysBKULlTiPkSug"
@@ -21,8 +19,7 @@ GRANT_TYPE = "client_credentials"
 
 DEFAULT_BUSINESS_ID = "yelp-san-francisco"
 DEFAULT_TERM = "lunch"
-DEFAULT_LOCATION = "11 Broadway #260, New York, NY 10004"
-DEFAULT_RADIUS = 1000
+DEFAULT_LOCATION = "New York City, NY"
 SEARCH_LIMIT = 10
 
 
@@ -57,14 +54,40 @@ def bearer_token
   "#{parsed['token_type']} #{parsed['access_token']}"
 end
 
-def search(term, location, radius, sort_by = "rating")
+
+# Make a request to the Fusion search endpoint. Full documentation is online at:
+# https://www.yelp.com/developers/documentation/v3/business_search
+#
+# term - search term used to find businesses
+# location - what geographic location the search should happen
+#
+# Examples
+#
+#   search("burrito", "san francisco")
+#   # => {
+#          "total": 1000000,
+#          "businesses": [
+#            "name": "El Farolito"
+#            ...
+#          ]
+#        }
+#
+#   search("sea food", "Seattle")
+#   # => {
+#          "total": 1432,
+#          "businesses": [
+#            "name": "Taylor Shellfish Farms"
+#            ...
+#          ]
+#        }
+#
+# Returns a parsed json object of the request
+def search(term, location)
   url = "#{API_HOST}#{SEARCH_PATH}"
   params = {
     term: term,
     location: location,
-    limit: SEARCH_LIMIT,
-    radius: radius,
-    sort_by: "rating"
+    limit: SEARCH_LIMIT
   }
 
   response = HTTP.auth(bearer_token).get(url, params: params)
@@ -107,14 +130,6 @@ OptionParser.new do |opts|
     options[:location] = location
   end
 
-  opts.on("-rRADIUS", "--radius=RADIUS", "Search radius (for search)") do |radius|
-    options[:radius] = radius
-  end
-
-  opts.on("-", "--radius=RADIUS", "Search radius (for search)") do |radius|
-    options[:radius] = radius
-  end
-
   opts.on("-bBUSINESS_ID", "--business-id=BUSINESS_ID", "Business id (for lookup)") do |id|
     options[:business_id] = id
   end
@@ -127,45 +142,3 @@ end.parse!
 
 
 command = ARGV
-
-
-case command.first
-when "search"
-  term = options.fetch(:term, DEFAULT_TERM)
-  location = options.fetch(:location, DEFAULT_LOCATION)
-  radius = options.fetch(:radius, DEFAULT_RADIUS)
-
-  raise "business_id is not a valid parameter for searching" if options.key?(:business_id)
-
-  response = search(term, location, radius)
-
-  puts "Found #{response["total"]} businesses. Listing #{SEARCH_LIMIT}:"
-  response["businesses"].each {|biz| puts "#{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
-when "lookup"
-  business_id = options.fetch(:business_id, DEFAULT_BUSINESS_ID)
-
-
-  raise "term is not a valid parameter for lookup" if options.key?(:term)
-  raise "location is not a valid parameter for lookup" if options.key?(:lookup)
-
-  response = business(business_id)
-
-  puts "Found business with id #{business_id}:"
-  puts JSON.pretty_generate(response)
-
-when "recommendation"
-  term = options.fetch(:term, DEFAULT_TERM)
-  location = options.fetch(:location, DEFAULT_LOCATION)
-  radius = options.fetch(:radius, DEFAULT_RADIUS)
-
-  raise "business_id is not a valid parameter for searching" if options.key?(:business_id)
-
-  response = search(term, location, radius)
-
-  puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
-  response["businesses"].each {|biz| puts "#{biz["name"]}"}
-
-
-else
-  puts "Please specify a command: search or lookup"
-end
