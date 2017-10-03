@@ -23,6 +23,15 @@ def first_options(username)
   puts msg
 end
 
+def get_searchterm_from_user
+    puts "Excellent! What are you in the mood for today?"
+    gets.chomp.downcase.gsub(/\s+/, "")
+end
+
 def get_first_choice
+  gets.chomp
+end
+
+def get_search_term
   gets.chomp
 end

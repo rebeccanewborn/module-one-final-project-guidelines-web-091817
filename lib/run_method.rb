@@ -31,14 +31,22 @@ class RunMethod
   end
 
   def top_ten_recommendations
+      response = search(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS)
+      puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
+      response["businesses"].each {|biz| puts "#{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
+      binding.pry
   end
 
   def see_what_classmates_are_eating
-    
+
   end
 
-  def explore_yelp(arg)
+  def explore_yelp
+      puts "Perfect! What are you in the mood for?"
+      term = get_search_term
+      response = search(term, DEFAULT_LOCATION, DEFAULT_RADIUS)
+
+      puts "Found #{response["total"]} businesses. Listing #{SEARCH_LIMIT}:"
+      response["businesses"].each {|biz| puts "#{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
   end
-
-
 end
