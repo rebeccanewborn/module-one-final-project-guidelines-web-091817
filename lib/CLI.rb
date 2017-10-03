@@ -4,6 +4,10 @@ class CLI
     welcome
     username = get_username_from_user
     @person = get_person_instance(username)
+    menu
+  end
+
+  def menu
     first_options
     first = get_choice
     rest_obj = navigate_to_first_choice(first)
@@ -46,6 +50,8 @@ class CLI
       see_what_classmates_are_eating
     when "3"
       explore_yelp
+    when "back" || "return"
+      run
     end
   end
 
@@ -66,13 +72,16 @@ class CLI
   end
 
   def see_what_classmates_are_eating
+    binding.pry
     rest_array = Lunch.display_all_today_lunches
     rest_array[pick_from_current_list]
   end
 
   def pick_from_current_list
     puts "Select the number of where you'd like to eat"
-    gets.chomp.to_i - 1
+    puts "Enter 'Back' to return."
+    output = gets.chomp
+    back(output)
   end
 
   def explore_yelp
@@ -84,7 +93,14 @@ class CLI
 
   def get_searchterm_from_user
     puts "Excellent! What are you in the mood for today?"
-    gets.chomp.downcase.gsub(/\s+/, "")
+    puts "Enter 'Back' to return."
+    output = gets.chomp.downcase.gsub(/\s+/, "")
+    back(output)
+  end
+
+  def back(output)
+    output == "back" || output ==  "return" ? menu :  output.to_i - 1
+    Lunch.all.where(restaurant_id: nil).each { |lunch| lunch.destroy }
   end
 
   def end_app(lunch)
