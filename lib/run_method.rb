@@ -1,10 +1,10 @@
-require_relative "person.rb"
-require_relative "lunch.rb"
-require_relative "restaurant.rb"
-require_relative "restaurantcategory.rb"
-require_relative "cuisine.rb"
-
-require_relative "command_line_interface.rb"
+# require_relative "person.rb"
+# require_relative "lunch.rb"
+# require_relative "restaurant.rb"
+# require_relative "restaurantcategory.rb"
+# require_relative "cuisine.rb"
+#
+# require_relative "command_line_interface.rb"
 
 class RunMethod
   def get_person_instance(name)
@@ -18,8 +18,8 @@ class RunMethod
     first_options(username)
     first = get_choice
     rest_obj = navigate_to_first_choice(first)
-    person.add_lunch(rest_obj)
-    binding.pry
+    lunch = person.add_lunch(rest_obj)
+    end_app(rest_obj)
   end
 
   def navigate_to_first_choice(choice)
@@ -33,14 +33,15 @@ class RunMethod
   end
 
   def top_ten_recommendations
-      response = search(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS)
-      puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
-      response["businesses"].each_with_index {|biz,i| puts "#{i+1}. #{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
-      find_or_create_restaurant_object(response["businesses"])
+    response = search(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS)
+    puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
+    response["businesses"].each_with_index {|biz,i| puts "#{i+1}. #{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
+    find_or_create_restaurant_object(response["businesses"])
   end
 
   def see_what_classmates_are_eating
-
+    rest_array = Lunch.display_all_today_lunches
+    rest_array[pick_from_current_list]
   end
 
   def explore_yelp
@@ -51,8 +52,6 @@ class RunMethod
       response["businesses"].each_with_index {|biz,i| puts "#{i+1}. #{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
 
       find_or_create_restaurant_object(response["businesses"])
-
-
   end
 
   def find_or_create_restaurant_object(response)

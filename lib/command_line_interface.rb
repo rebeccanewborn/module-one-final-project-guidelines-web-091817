@@ -41,3 +41,8 @@ def pick_from_current_list
   puts "Select the number of where you'd like to eat"
   gets.chomp.to_i - 1
 end
+
+def end_app(lunch)
+  puts "You picked #{lunch.name} located at #{lunch.address}."
+  puts "We hope you enjoy your lunch! Bon appetit"
+end
