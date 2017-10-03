@@ -2,6 +2,7 @@ class CLI
   attr_accessor :person
   def run
     welcome
+    clear_data
     username = get_username_from_user
     @person = get_person_instance(username)
     menu
@@ -72,16 +73,16 @@ class CLI
   end
 
   def see_what_classmates_are_eating
-    binding.pry
     rest_array = Lunch.display_all_today_lunches
-    rest_array[pick_from_current_list]
+    input = pick_from_current_list
+    rest_array[input]
   end
 
   def pick_from_current_list
     puts "Select the number of where you'd like to eat"
     puts "Enter 'Back' to return."
     output = gets.chomp
-    back(output)
+    back(output).to_i - 1
   end
 
   def explore_yelp
@@ -99,8 +100,12 @@ class CLI
   end
 
   def back(output)
-    output == "back" || output ==  "return" ? menu :  output.to_i - 1
-    Lunch.all.where(restaurant_id: nil).each { |lunch| lunch.destroy }
+    clear_data
+    output == "back" || output ==  "return" ? menu :  output
+  end
+
+  def clear_data
+    Lunch.all.where(restaurant_id: nil).each {|lunch| lunch.destroy }
   end
 
   def end_app(lunch)
