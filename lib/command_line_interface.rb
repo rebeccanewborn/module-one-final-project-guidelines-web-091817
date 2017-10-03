@@ -11,6 +11,7 @@ end
 def get_username_from_user
     puts "Please enter your name"
     gets.chomp.downcase.gsub(/\s+/, "")
+
 end
 
 def first_options(username)
@@ -28,10 +29,15 @@ def get_searchterm_from_user
     gets.chomp.downcase.gsub(/\s+/, "")
 end
 
-def get_first_choice
+def get_choice
   gets.chomp
 end
 
 def get_search_term
   gets.chomp
+end
+
+def pick_from_current_list
+  puts "Select the number of where you'd like to eat"
+  gets.chomp.to_i - 1
 end
