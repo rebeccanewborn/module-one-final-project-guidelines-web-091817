@@ -33,7 +33,7 @@ class CLI
     msg = <<-MSG
       Welcome #{person.name}. What would you like to do?
       1. View recommendations close to you
-      2. See what your classmates are eating
+      2. Explore Flatiron students' lunch choices
       3. Explore Yelp
     MSG
     puts msg
@@ -48,11 +48,14 @@ class CLI
     when "1"
       top_ten_recommendations
     when "2"
-      see_what_classmates_are_eating
+      explore_flatiron_students
     when "3"
       explore_yelp
     when "back" || "return"
       run
+    else
+      puts "Whoooooooops!"
+      menu
     end
   end
 
@@ -72,10 +75,48 @@ class CLI
     Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
   end
 
-  def see_what_classmates_are_eating
+  def explore_flatiron_students
+    msg = <<-MSG
+      What would you like to do?
+      1. See where your classmates are planning on eating today
+      2. See where Flatiron students have eaten recently
+      3. Search by classmate for their recent lunch history
+    MSG
+    puts msg
+    flatiron_student_options(gets.chomp)
+  end
+
+  def flatiron_student_options(choice)
+    case choice
+    when "1"
+      see_what_classmates_are_eating_today
+    when "2"
+      see_where_classmates_have_eaten_recently
+    when "3"
+      search_by_classmate
+    else
+      puts "whooops! try again"
+      explore_flatiron_students
+    end
+  end
+
+  def see_what_classmates_are_eating_today
     rest_array = Lunch.display_all_today_lunches
     input = pick_from_current_list
     rest_array[input]
+  end
+
+  def see_where_classmates_have_eaten_recently
+    rest_array = Lunch.display_all_recent_lunches
+    rest_array.uniq!
+    rest_array[pick_from_current_list]
+  end
+
+  def search_by_classmate
+    puts "Enter the name of the student you'd like to search"
+    person = Person.find_by(name: gets.chomp.downcase.gsub(/\s+/, ""))
+    rest_array = Lunch.display_all_lunches_of_person(person)
+    rest_array[pick_from_current_list]
   end
 
   def pick_from_current_list
