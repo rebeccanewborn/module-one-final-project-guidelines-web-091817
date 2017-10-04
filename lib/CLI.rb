@@ -3,6 +3,7 @@ class CLI
 
   def run
     Restaurant.update_all today_popularity: 0 if first_login_today?
+    clear_screen
     welcome
     clear_null_data
     get_username_from_user
@@ -21,7 +22,7 @@ class CLI
   end
 
   def welcome
-    puts "Welcome to Flatiron School lunch application"
+    puts "Welcome to the Flatiron School Lunch Pal".colorize(:cyan)
   end
 
   def get_username_from_user
@@ -40,21 +41,26 @@ class CLI
   end
 
   def ask_user(user_input)
-    puts "It seems that #{user_input} has not been registered yet!"
+    clear_screen
+    puts "It seems that #{user_input} has not been registered yet!".colorize(:light_red)
     puts "Press 1 to create an account or press anything else to go back."
     user_choice = gets.chomp
     user_choice == "1" ? create_new_user(user_input) : run
   end
 
+  def clear_screen
+    puts "\e[H\e[2J"
+  end
+
   def check_password
     puts "Please enter your password:"
-    pass_input = gets.chomp
+    pass_input = STDIN.noecho(&:gets).chomp
     restored_hash = BCrypt::Password.new person.password
     restored_hash == pass_input ? menu : try_again
   end
 
   def try_again
-    puts "That password is incorrect"
+    puts "That password is incorrect".colorize(:red)
     check_password
   end
 
@@ -66,11 +72,12 @@ class CLI
 
   def create_password
     puts "Please create a new password:"
-    pass_input = gets.chomp
+    pass_input = STDIN.noecho(&:gets).chomp
     BCrypt::Password.create pass_input
   end
 
   def first_options
+    clear_screen
     msg = <<-MSG
       Welcome #{person.name}. What would you like to do?
       1. View recommendations close to you
@@ -98,7 +105,7 @@ class CLI
     when "back" || "return"
       run
     else
-      puts "Whoooooooops!"
+      puts "Whoooooooops!".colorize(:light_red)
       menu
     end
   end
@@ -142,7 +149,7 @@ class CLI
     when "3"
       search_by_classmate
     else
-      puts "whooops! try again"
+      puts "whooops! try again".colorize(:light_red)
       explore_flatiron_students
     end
   end
@@ -200,6 +207,7 @@ class CLI
   end
 
   def end_app(lunch)
+    clear_screen
     puts "You picked #{lunch.name} located at #{lunch.address}."
     puts "We hope you enjoy your lunch! Bon appetit"
   end
