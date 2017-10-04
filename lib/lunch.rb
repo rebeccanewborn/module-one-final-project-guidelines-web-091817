@@ -22,4 +22,5 @@ class Lunch < ActiveRecord::Base
       lunch.restaurant
     }
   end
+
 end

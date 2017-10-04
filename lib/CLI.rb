@@ -22,6 +22,7 @@ class CLI
 
   def welcome
     puts "Welcome to Flatiron School lunch application"
+    puts "Today's most popular lunch is #{Restaurant.today_most_popular}"
   end
 
   def get_username_from_user
