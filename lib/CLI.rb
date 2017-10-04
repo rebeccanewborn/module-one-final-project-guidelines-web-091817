@@ -22,7 +22,6 @@ class CLI
 
   def welcome
     puts "Welcome to Flatiron School lunch application"
-    puts "Today's most popular lunch is #{Restaurant.today_most_popular}"
   end
 
   def get_username_from_user
@@ -73,10 +72,15 @@ class CLI
 
   def first_options
     msg = <<-MSG
-      Welcome #{person.name}. What would you like to do?
-      1. View recommendations close to you
-      2. Explore Flatiron students' lunch choices
-      3. Explore Yelp
+
+      Welcome #{person.name}!
+
+      Today's most popular lunch is #{Restaurant.today_most_popular.name}.
+
+      What would you like to do?
+      1. Join today's most popular lunch
+      2. Explore Yelp
+      3. Explore Flatiron students' lunch choices
       4. None of the above - I brought my own lunch today!
     MSG
     puts msg
@@ -89,11 +93,12 @@ class CLI
   def navigate_to_first_choice(choice)
     case choice
     when "1"
-      top_ten_recommendations
+      join_most_popular
     when "2"
-      explore_flatiron_students
-    when "3"
+      top_ten_recommendations
       explore_yelp
+    when "3"
+      explore_flatiron_students
     when "4"
       brought_lunch
     when "back" || "return"
@@ -104,10 +109,14 @@ class CLI
     end
   end
 
+  def join_most_popular
+    Restaurant.today_most_popular
+  end
+
   def top_ten_recommendations
     response = search(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS)
     list_out_options(response)
-    find_or_create_restaurant_object(response["businesses"])
+    # find_or_create_restaurant_object(response["businesses"])
   end
 
   def list_out_options(response)
