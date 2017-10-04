@@ -2,7 +2,7 @@ class CLI
   attr_accessor :person
   def run
     welcome
-    clear_data
+    clear_null_data
     username = get_username_from_user
     @person = get_person_instance(username)
     menu
@@ -35,6 +35,7 @@ class CLI
       1. View recommendations close to you
       2. Explore Flatiron students' lunch choices
       3. Explore Yelp
+      4. None of the above - I brought my own lunch today!
     MSG
     puts msg
   end
@@ -51,6 +52,8 @@ class CLI
       explore_flatiron_students
     when "3"
       explore_yelp
+    when "4"
+      brought_lunch
     when "back" || "return"
       run
     else
@@ -77,6 +80,9 @@ class CLI
 
   def explore_flatiron_students
     msg = <<-MSG
+
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
       What would you like to do?
       1. See where your classmates are planning on eating today
       2. See where Flatiron students have eaten recently
@@ -140,12 +146,15 @@ class CLI
     back(output)
   end
 
+  def brought_lunch
+  end
+
   def back(output)
-    clear_data
+    clear_null_data
     output == "back" || output ==  "return" ? menu :  output
   end
 
-  def clear_data
+  def clear_null_data
     Lunch.all.where(restaurant_id: nil).each {|lunch| lunch.destroy }
   end
 

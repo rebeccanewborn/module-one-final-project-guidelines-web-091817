@@ -6,6 +6,8 @@ class Person < ActiveRecord::Base
       lunch.person = self
       lunch.restaurant = restaurant
       lunch.datetime = Date.today
+      Restaurant.increment_counter(:all_time_popularity, restaurant.id)
+      Restaurant.increment_counter(:today_popularity, restaurant.id)
     }
   end
 end
