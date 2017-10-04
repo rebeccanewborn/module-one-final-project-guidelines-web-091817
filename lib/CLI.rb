@@ -22,7 +22,19 @@ class CLI
 
   def get_username_from_user
     puts "Please enter your name"
-    gets.chomp.downcase.gsub(/\s+/, "")
+    user_input = gets.chomp.downcase.gsub(/\s+/, "")
+    check_username(user_input)
+  end
+
+  def check_username(user_input)
+    !Person.all.find {|person| person.name == "user_input"} ? user_input : create_user(user_input)
+  end
+
+  def create_user(user_input)
+    puts "It seems that #{user_input} has not been registered yet!"
+    puts "Press 1 to create an account or press anything else to go back."
+
+    user_input = gets.chomp.downcase.gsub(/\s+/, "")
   end
 
   def get_person_instance(name)
@@ -79,7 +91,7 @@ class CLI
     msg = <<-MSG
       What would you like to do?
       1. See where your classmates are planning on eating today
-      2. See where Flatiron students have eaten recently
+      2. See where Flatiron studen2ts have eaten recently
       3. Search by classmate for their recent lunch history
     MSG
     puts msg
