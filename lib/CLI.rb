@@ -78,12 +78,11 @@ class CLI
 
   def first_options
     clear_screen
+    puts "Welcome #{person.name}!"
+
+    puts "Today's most popular lunch is #{Restaurant.today_most_popular.name}." if !first_login_today?
+
     msg = <<-MSG
-
-      Welcome #{person.name}!
-
-      Today's most popular lunch is #{Restaurant.today_most_popular.name}.
-
       What would you like to do?
       1. Join today's most popular lunch
       2. Explore Yelp
