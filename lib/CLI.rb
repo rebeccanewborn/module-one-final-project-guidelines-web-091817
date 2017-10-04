@@ -1,5 +1,5 @@
 class CLI
-  attr_accessor :person
+  attr_accessor :person, :rest_obj
 
   def run
     Restaurant.update_all today_popularity: 0 if first_login_today?
@@ -12,7 +12,7 @@ class CLI
   def menu
     first_options
     first = get_choice
-    rest_obj = navigate_to_first_choice(first)
+    @rest_obj = navigate_to_first_choice(first)
     person.add_lunch(rest_obj)
     end_app(rest_obj)
   end
@@ -138,12 +138,12 @@ class CLI
 
   def find_or_create_restaurant_object(response)
     choice = response[pick_from_current_list]
-    Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
+    Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0], url: choice["url"])
   end
 
   def find_by_choice(response, number)
-    choice = response[number]
-    Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
+    choice = response[number-1]
+    Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0], url: choice["url"])
   end
 
   def explore_yelp(response)
@@ -156,7 +156,6 @@ class CLI
   end
 
   def search_yelp(input)
-    binding.pry
     response = search(input, DEFAULT_LOCATION, DEFAULT_RADIUS)
     header =  "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
     list_out_options(response, header)
@@ -235,7 +234,7 @@ class CLI
   end
 
   def brought_lunch
-    
+
   end
 
   def clear_null_data
@@ -245,6 +244,8 @@ class CLI
   def end_app(lunch)
     clear_screen
     puts "You picked #{lunch.name} located at #{lunch.address}."
-    puts "We hope you enjoy your lunch! Bon appetit"
+    puts "We hope you enjoy your lunch! Check out #{lunch.name}'s Yelp page now!'"
+    sleep 5
+    Launchy.open(rest_obj.url)
   end
 end

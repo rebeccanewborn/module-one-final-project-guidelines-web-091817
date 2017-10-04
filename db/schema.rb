@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 10) do
+ActiveRecord::Schema.define(version: 11) do
 
   create_table "cohorts", force: :cascade do |t|
     t.string "name"
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(version: 10) do
 
   create_table "people", force: :cascade do |t|
     t.string  "name"
-    t.integer "cohort_id"
     t.string  "password"
+    t.integer "cohort_id"
   end
 
   create_table "restaurantcategories", force: :cascade do |t|
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 10) do
     t.string  "address"
     t.integer "all_time_popularity", default: 0
     t.integer "today_popularity",    default: 0
+    t.string  "url"
   end
 
 end
