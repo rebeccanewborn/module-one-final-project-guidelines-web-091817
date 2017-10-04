@@ -3,6 +3,7 @@ class CLI
 
   def run
     Restaurant.update_all today_popularity: 0 if first_login_today?
+    clear_screen
     welcome
     clear_null_data
     get_username_from_user
@@ -21,7 +22,7 @@ class CLI
   end
 
   def welcome
-    puts "Welcome to Flatiron School lunch application"
+    puts "Welcome to the Flatiron School Lunch Pal".colorize(:cyan)
   end
 
   def get_username_from_user
@@ -40,21 +41,26 @@ class CLI
   end
 
   def ask_user(user_input)
-    puts "It seems that #{user_input} has not been registered yet!"
+    clear_screen
+    puts "It seems that #{user_input} has not been registered yet!".colorize(:light_red)
     puts "Press 1 to create an account or press anything else to go back."
     user_choice = gets.chomp
     user_choice == "1" ? create_new_user(user_input) : run
   end
 
+  def clear_screen
+    puts "\e[H\e[2J"
+  end
+
   def check_password
     puts "Please enter your password:"
-    pass_input = gets.chomp
+    pass_input = STDIN.noecho(&:gets).chomp
     restored_hash = BCrypt::Password.new person.password
     restored_hash == pass_input ? menu : try_again
   end
 
   def try_again
-    puts "That password is incorrect"
+    puts "That password is incorrect".colorize(:red)
     check_password
   end
 
@@ -66,11 +72,12 @@ class CLI
 
   def create_password
     puts "Please create a new password:"
-    pass_input = gets.chomp
+    pass_input = STDIN.noecho(&:gets).chomp
     BCrypt::Password.create pass_input
   end
 
   def first_options
+    clear_screen
     msg = <<-MSG
 
       Welcome #{person.name}!
@@ -104,7 +111,7 @@ class CLI
     when "back" || "return"
       run
     else
-      puts "Whoooooooops!"
+      puts "Whoooooooops!".colorize(:light_red)
       menu
     end
   end
@@ -149,6 +156,7 @@ class CLI
   end
 
   def search_yelp(input)
+    binding.pry
     response = search(input, DEFAULT_LOCATION, DEFAULT_RADIUS)
     header =  "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
     list_out_options(response, header)
@@ -199,23 +207,12 @@ class CLI
         puts "whooops! try again"
         explore_flatiron_students
       end
-
     end
   end
 
   def see_what_classmates_are_eating_today
     rest_array = Lunch.display_all_today_lunches
-    # puts "Choose from options above, or enter 'back' to return to the main menu"
-    # input = pick_from_current_list
-    # rest_array[input]
   end
-
-  # def see_where_classmates_have_eaten_recently
-  #   rest_array = Lunch.display_all_recent_lunches
-  #   rest_array.uniq!
-  #   puts "Choose from options above, or enter 'back' to return to the main menu"
-  #   rest_array[pick_from_current_list]
-  # end
 
   def search_by_classmate
     puts "Enter the name of the student you'd like to search"
@@ -237,19 +234,16 @@ class CLI
     back(output).to_i - 1
   end
 
-
-
-
   def brought_lunch
+    
   end
-
-
 
   def clear_null_data
     Lunch.all.where(restaurant_id: nil).each {|lunch| lunch.destroy }
   end
 
   def end_app(lunch)
+    clear_screen
     puts "You picked #{lunch.name} located at #{lunch.address}."
     puts "We hope you enjoy your lunch! Bon appetit"
   end
