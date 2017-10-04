@@ -1,5 +1,6 @@
 class Person < ActiveRecord::Base
   has_many :restaurants, through: :lunches
+  belongs_to :cohort
 
   def add_lunch(restaurant)
     Lunch.create { |lunch|
