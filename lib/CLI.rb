@@ -1,13 +1,10 @@
 class CLI
   attr_accessor :person
+
   def run
-    # Restaurant.reset_daily_counters if first_login_today?
-    # binding.pry
     welcome
     clear_null_data
-    username = get_username_from_user
-    @person = get_person_instance(username)
-    menu
+    get_username_from_user
   end
 
   def menu
@@ -17,10 +14,6 @@ class CLI
     person.add_lunch(rest_obj)
     end_app(rest_obj)
   end
-  #
-  # def first_login_today?
-  #   !Lunch.all.any? { |lunch| lunch.datetime == Date.tomorrow }
-  # end
 
   def welcome
     puts "Welcome to Flatiron School lunch application"
@@ -28,11 +21,48 @@ class CLI
 
   def get_username_from_user
     puts "Please enter your name"
-    gets.chomp.downcase.gsub(/\s+/, "")
+    user_input = gets.chomp.downcase.gsub(/\s+/, "")
+    check_username(user_input)
+  end
+
+  def check_username(user_input)
+    !!Person.all.find {|person| person.name == user_input} ? get_person_instance(user_input) : ask_user(user_input)
   end
 
   def get_person_instance(name)
-    Person.find_or_create_by(name: name)
+    @person = Person.find_by(name:name)
+    check_password
+  end
+
+  def ask_user(user_input)
+    puts "It seems that #{user_input} has not been registered yet!"
+    puts "Press 1 to create an account or press anything else to go back."
+    user_choice = gets.chomp
+    user_choice == "1" ? create_new_user(user_input) : run
+  end
+
+  def check_password
+    puts "Please enter your password:"
+    pass_input = gets.chomp
+    restored_hash = BCrypt::Password.new person.password
+    restored_hash == pass_input ? menu : try_again
+  end
+
+  def try_again
+    puts "That password is incorrect"
+    check_password
+  end
+
+  def create_new_user(name)
+    password = create_password
+    @person = Person.create(name: name, password: password.to_s)
+    menu
+  end
+
+  def create_password
+    puts "Please create a new password:"
+    pass_input = gets.chomp
+    BCrypt::Password.create pass_input
   end
 
   def first_options
@@ -87,11 +117,11 @@ class CLI
   def explore_flatiron_students
     msg = <<-MSG
 
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       What would you like to do?
       1. See where your classmates are planning on eating today
-      2. See where Flatiron students have eaten recently
+      2. See where Flatiron studen2ts have eaten recently
       3. Search by classmate for their recent lunch history
     MSG
     puts msg

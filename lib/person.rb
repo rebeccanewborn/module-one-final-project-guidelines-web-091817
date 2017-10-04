@@ -1,4 +1,5 @@
 class Person < ActiveRecord::Base
+  include BCrypt
   has_many :restaurants, through: :lunches
   belongs_to :cohort
 
@@ -11,4 +12,5 @@ class Person < ActiveRecord::Base
       Restaurant.increment_counter(:today_popularity, restaurant.id)
     }
   end
+
 end
