@@ -95,8 +95,7 @@ class CLI
     when "1"
       join_most_popular
     when "2"
-      top_ten_recommendations
-      explore_yelp
+      explore_yelp(top_ten_recommendations)
     when "3"
       explore_flatiron_students
     when "4"
@@ -115,18 +114,50 @@ class CLI
 
   def top_ten_recommendations
     response = search(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS)
-    list_out_options(response)
+    header = "These are the ten highest rated restaurants near you: "
+    list_out_options(response, header)
     # find_or_create_restaurant_object(response["businesses"])
+    response
   end
 
-  def list_out_options(response)
-    puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
+  def list_out_options(response, header)
+    # puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
+    puts "
+    #{header}
+    "
     response["businesses"].each_with_index {|biz,i| puts "#{i+1}. #{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
   end
 
   def find_or_create_restaurant_object(response)
     choice = response[pick_from_current_list]
     Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
+  end
+
+  def explore_yelp(response)
+    puts "
+    Choose from the list above, enter your own search term to explore other options, or enter 'back' to return to the main menu."
+    input = get_input_from_user
+
+
+    (1..SEARCH_LIMIT).to_a.include?(input.to_i) ? find_or_create_restaurant_object(response["businesses"]) : search_yelp(input)
+  end
+
+  def search_yelp(input)
+    response = search(input, DEFAULT_LOCATION, DEFAULT_RADIUS)
+    header =  "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
+    list_out_options(response, header)
+    puts "Choose from options above, or enter 'back' to return to the main menu"
+    find_or_create_restaurant_object(response["businesses"])
+  end
+
+
+  def get_input_from_user
+    output = gets.chomp.downcase.gsub(/\s+/, "")
+    back(output)
+  end
+  def back(output)
+    clear_null_data
+    output == "back" || output ==  "return" ? menu :  output
   end
 
   def explore_flatiron_students
@@ -159,6 +190,7 @@ class CLI
 
   def see_what_classmates_are_eating_today
     rest_array = Lunch.display_all_today_lunches
+    puts "Choose from options above, or enter 'back' to return to the main menu"
     input = pick_from_current_list
     rest_array[input]
   end
@@ -166,6 +198,7 @@ class CLI
   def see_where_classmates_have_eaten_recently
     rest_array = Lunch.display_all_recent_lunches
     rest_array.uniq!
+    puts "Choose from options above, or enter 'back' to return to the main menu"
     rest_array[pick_from_current_list]
   end
 
@@ -173,37 +206,24 @@ class CLI
     puts "Enter the name of the student you'd like to search"
     person = Person.find_by(name: gets.chomp.downcase.gsub(/\s+/, ""))
     rest_array = Lunch.display_all_lunches_of_person(person)
+    puts "Choose from options above, or enter 'back' to return to the main menu"
     rest_array[pick_from_current_list]
   end
 
   def pick_from_current_list
-    puts "Select the number of where you'd like to eat"
-    puts "Enter 'Back' to return."
+    # puts "Choose from the options above, or enter 'back' to return to the main menu."
+
     output = gets.chomp
     back(output).to_i - 1
   end
 
-  def explore_yelp
-    term = get_searchterm_from_user
-    response = search(term, DEFAULT_LOCATION, DEFAULT_RADIUS)
-    list_out_options(response)
-    find_or_create_restaurant_object(response["businesses"])
-  end
 
-  def get_searchterm_from_user
-    puts "Excellent! What are you in the mood for today?"
-    puts "Enter 'Back' to return."
-    output = gets.chomp.downcase.gsub(/\s+/, "")
-    back(output)
-  end
+
 
   def brought_lunch
   end
 
-  def back(output)
-    clear_null_data
-    output == "back" || output ==  "return" ? menu :  output
-  end
+
 
   def clear_null_data
     Lunch.all.where(restaurant_id: nil).each {|lunch| lunch.destroy }
