@@ -1,8 +1,7 @@
 class CLI
   attr_accessor :person
   def run
-    # Restaurant.reset_daily_counters if first_login_today?
-    # binding.pry
+    Restaurant.update_all today_popularity: 0 if first_login_today?
     welcome
     clear_null_data
     username = get_username_from_user
@@ -17,10 +16,10 @@ class CLI
     person.add_lunch(rest_obj)
     end_app(rest_obj)
   end
-  #
-  # def first_login_today?
-  #   !Lunch.all.any? { |lunch| lunch.datetime == Date.tomorrow }
-  # end
+
+  def first_login_today?
+    !Lunch.all.any? { |lunch| lunch.datetime == Date.today }
+  end
 
   def welcome
     puts "Welcome to Flatiron School lunch application"
