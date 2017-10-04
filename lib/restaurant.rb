@@ -2,6 +2,7 @@ class Restaurant < ActiveRecord::Base
   has_many :people, through: :lunches
   has_many :lunches
   has_many :cuisines, through: :restaurantcategories
+  @@brought_lunch
 
   def self.today_most_popular
     Restaurant.order(today_popularity: :desc).first
@@ -16,6 +17,10 @@ class Restaurant < ActiveRecord::Base
       puts ""
       rest
     }
+  end
+
+  def self.make_brought
+    
   end
 
 end

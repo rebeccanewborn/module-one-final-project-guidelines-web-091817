@@ -233,7 +233,7 @@ class CLI
   end
 
   def brought_lunch
-
+    Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
   end
 
   def clear_null_data
