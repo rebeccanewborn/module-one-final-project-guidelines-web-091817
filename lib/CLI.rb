@@ -2,6 +2,7 @@ class CLI
   attr_accessor :person
 
   def run
+    Restaurant.update_all today_popularity: 0 if first_login_today?
     welcome
     clear_null_data
     get_username_from_user
@@ -13,6 +14,10 @@ class CLI
     rest_obj = navigate_to_first_choice(first)
     person.add_lunch(rest_obj)
     end_app(rest_obj)
+  end
+
+  def first_login_today?
+    !Lunch.all.any? { |lunch| lunch.datetime == Date.today }
   end
 
   def welcome
