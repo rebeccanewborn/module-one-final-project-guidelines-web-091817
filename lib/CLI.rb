@@ -97,7 +97,8 @@ class CLI
     when "2"
       explore_yelp(top_ten_recommendations)
     when "3"
-      explore_flatiron_students
+      array = see_what_classmates_are_eating_today
+      explore_flatiron_students(array)
     when "4"
       brought_lunch
     when "back" || "return"
@@ -133,13 +134,18 @@ class CLI
     Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
   end
 
+  def find_by_choice(response, number)
+    choice = response[number]
+    Restaurant.find_or_create_by(name:choice["name"],rating:choice["rating"], price:choice["price"], address:choice["location"]["display_address"][0])
+  end
+
   def explore_yelp(response)
     puts "
     Choose from the list above, enter your own search term to explore other options, or enter 'back' to return to the main menu."
     input = get_input_from_user
 
 
-    (1..SEARCH_LIMIT).to_a.include?(input.to_i) ? find_or_create_restaurant_object(response["businesses"]) : search_yelp(input)
+    (1..SEARCH_LIMIT).to_a.include?(input.to_i) ? find_by_choice(response["businesses"], input.to_i) : search_yelp(input)
   end
 
   def search_yelp(input)
@@ -155,52 +161,61 @@ class CLI
     output = gets.chomp.downcase.gsub(/\s+/, "")
     back(output)
   end
+
   def back(output)
     clear_null_data
     output == "back" || output ==  "return" ? menu :  output
   end
 
-  def explore_flatiron_students
+  def explore_flatiron_students(array)
+    # puts "
+    # Choose from the list above, enter your own search term to explore other options, or enter 'back' to return to the main menu."
+    # input = get_input_from_user
+    #
+    #
+    # (1..SEARCH_LIMIT).to_a.include?(input.to_i) ? find_or_create_restaurant_object(response["businesses"]) : search_yelp(input)
+
     msg = <<-MSG
 
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Choose from the list above to join a classmate, enter 'search people' to explore people, enter 'browse restaurants' to explore restaurants, and as always, enter 'back' to return to the main menu.
 
-      What would you like to do?
-      1. See where your classmates are planning on eating today
-      2. See where Flatiron studen2ts have eaten recently
-      3. Search by classmate for their recent lunch history
-    MSG
+      MSG
+
     puts msg
-    flatiron_student_options(gets.chomp)
+    flatiron_student_options(gets.chomp, array)
   end
 
-  def flatiron_student_options(choice)
+  def flatiron_student_options(choice, array)
+    back(choice)
     case choice
-    when "1"
-      see_what_classmates_are_eating_today
-    when "2"
-      see_where_classmates_have_eaten_recently
-    when "3"
+    when "search people"
       search_by_classmate
+    when "browse restaurants"
+      browse_restaurants
     else
-      puts "whooops! try again"
-      explore_flatiron_students
+      if (1..100).to_a.include?(choice.to_i)
+        array[choice.to_i-1]
+      else
+        puts "whooops! try again"
+        explore_flatiron_students
+      end
+
     end
   end
 
   def see_what_classmates_are_eating_today
     rest_array = Lunch.display_all_today_lunches
-    puts "Choose from options above, or enter 'back' to return to the main menu"
-    input = pick_from_current_list
-    rest_array[input]
+    # puts "Choose from options above, or enter 'back' to return to the main menu"
+    # input = pick_from_current_list
+    # rest_array[input]
   end
 
-  def see_where_classmates_have_eaten_recently
-    rest_array = Lunch.display_all_recent_lunches
-    rest_array.uniq!
-    puts "Choose from options above, or enter 'back' to return to the main menu"
-    rest_array[pick_from_current_list]
-  end
+  # def see_where_classmates_have_eaten_recently
+  #   rest_array = Lunch.display_all_recent_lunches
+  #   rest_array.uniq!
+  #   puts "Choose from options above, or enter 'back' to return to the main menu"
+  #   rest_array[pick_from_current_list]
+  # end
 
   def search_by_classmate
     puts "Enter the name of the student you'd like to search"
@@ -210,9 +225,14 @@ class CLI
     rest_array[pick_from_current_list]
   end
 
+  def browse_restaurants
+    all_rests = Restaurant.all_unique
+    puts "Choose from options above, or enter 'back' to return to the main menu"
+    all_rests[pick_from_current_list]
+  end
+
   def pick_from_current_list
     # puts "Choose from the options above, or enter 'back' to return to the main menu."
-
     output = gets.chomp
     back(output).to_i - 1
   end

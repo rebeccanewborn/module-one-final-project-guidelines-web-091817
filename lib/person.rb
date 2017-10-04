@@ -1,6 +1,7 @@
 class Person < ActiveRecord::Base
   include BCrypt
   has_many :restaurants, through: :lunches
+  has_many :lunches
   belongs_to :cohort
 
   def add_lunch(restaurant)
