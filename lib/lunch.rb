@@ -23,4 +23,11 @@ class Lunch < ActiveRecord::Base
     }
   end
 
+  def self.display_all_brought_lunches(restaurant)
+    binding.pry
+    all.where(restaurant_id: restaurant.id).each { |lunch|
+      puts lunch.person.name
+    }
+  end
+
 end

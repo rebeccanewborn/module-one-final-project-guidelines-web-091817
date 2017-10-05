@@ -3,6 +3,7 @@ class CLI
 
   def run
     Restaurant.update_all today_popularity: 0 if first_login_today?
+    binding.pry
     clear_screen
     welcome
     clear_null_data
@@ -233,7 +234,8 @@ class CLI
   end
 
   def brought_lunch
-    Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
+    rest = Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
+    Lunch.display_all_brought_lunches(rest)
   end
 
   def clear_null_data
