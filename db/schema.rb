@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 11) do
 
   create_table "people", force: :cascade do |t|
     t.string  "name"
-    t.string  "password"
     t.integer "cohort_id"
   end
 

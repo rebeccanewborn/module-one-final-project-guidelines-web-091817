@@ -44,6 +44,4 @@ class Table
      end
    end
   end
-
-
 end

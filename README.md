@@ -1,8 +1,59 @@
-# Module One Final Project Guidelines
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/logo.png)
 
-For your final project, we'll be building a Command Line database application.
+# Short Description
+
+This program is built to help students at the Flatiron school have social lunch experiences.
+Using the Yelp API we find top rated restaurants within walking distance of 11 Broadway and allow users
+to register where they will have lunch, as well as explore where their colleagues will be eating.
+
+# Installation
+
+Install by running "bundle" in project directory.
+This project relies on the following Gems:
+- sinatra-activerecord
+- sqlite3
+- pry
+- require_all
+- http
+- json
+- bcrypt
+- launchy
+- command_line_reporter
+
+# Walkthrough
+
+##Login
+
+The program starts by prompting the user to enter their name and cohort:
+
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/opening.png)
+
+After identifying that the user name is on record the user will be prompted to enter their password. Passwords are obscured and hidden from the terminal and are then stored using BCrypt to ensure that our database doesn't store an easily accessible string of everyone's passwords.
+
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/password.png)
+
+Successful logins take the user the menu where they can choose to:
+
+- Join the most popular lunch of the day, which is displayed above
+
+![Top Recommendations](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/yelp_recommendations.png)
+
+
+![Sushi Search](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/yelp_search.png)
+
+- Explore Yelp (User receives a recommendation of the top 10 most highly reviewed restaurants in the vicinity and can then enter search terms to search for specific establishments)
+- Explore colleague choices by seeing where they are eating.
+- Register that they have brought their own lunch
+
+All options allow you to pick a lunch (which allows others to see your meal and join you) and finish off by sending you to the Yelp page for the chosen restaurant to get a head start on selecting an item from the menu.
+
+# Contributors Guide
+
+# Link to Code License
+
+
+
 
 ## Project Requirements
 
