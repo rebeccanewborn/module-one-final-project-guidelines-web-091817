@@ -1,8 +1,37 @@
-# Module One Final Project Guidelines
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/logo.png)
 
-For your final project, we'll be building a Command Line database application.
+# Short Description
+
+This program is built to help students at the Flatiron school have social lunch experiences.
+Using the Yelp API we find top rated restaurants within walking distance of 11 Broadway and allow users
+to register where they will have lunch, as well as explore where their colleagues will be eating.
+
+# Installation
+
+Install by running "bundle" in project directory.
+This project relies on the following Gems:
+- sinatra-activerecord
+- sqlite3
+- pry
+- require_all
+- http
+- json
+- bcrypt
+- launchy
+- command_line_reporter
+
+# Walkthrough
+
+![Opening](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
+
+
+# Contributors Guide
+
+# Link to Code License
+
+
+
 
 ## Project Requirements
 

@@ -23,7 +23,7 @@ class CLI
   end
 
   def welcome
-    puts "Welcome to the Flatiron School Lunch Pal"
+    puts "Welcome to the Flatiron School Lunch Pal".cyan
   end
 
   def get_username_from_user
@@ -54,7 +54,7 @@ class CLI
   end
 
   def self.resize_screen
-    printf "\e[8;50;120t"
+    printf "\e[8;30;120t"
   end
 
   def check_password
