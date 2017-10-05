@@ -1,5 +1,5 @@
 class CLI
-  attr_accessor :person, :rest_obj
+  attr_accessor :person, :rest_obj, :back
 
   def run
     CLI.resize_screen
@@ -11,6 +11,7 @@ class CLI
   end
 
   def menu
+    @back = __method__
     first_options
     first = get_choice
     @rest_obj = navigate_to_first_choice(first)
@@ -23,10 +24,12 @@ class CLI
   end
 
   def welcome
-    puts "Welcome to the Flatiron School Lunch Pal".cyan
+    puts "Welcome to the Flatiron School Lunch Pal"
   end
 
   def get_username_from_user
+    binding.pry
+    @back = __method__
     puts "Please enter your name"
     user_input = gets.chomp.downcase.gsub(/\s+/, "")
     check_username(user_input)
@@ -44,9 +47,10 @@ class CLI
   def ask_user(user_input)
     clear_screen
     puts "It seems that #{user_input} has not been registered yet!"
-    puts "Press 1 to create an account or press anything else to go back."
+    puts "Press 'L' to create an account or type in 'back' to start over."
     user_choice = gets.chomp
-    user_choice == "1" ? create_new_user(user_input) : run
+    binding.pry
+    user_choice == "l" || user_choice == "L" ? create_new_user(user_input) : send(@back)
   end
 
   def clear_screen
@@ -54,7 +58,7 @@ class CLI
   end
 
   def self.resize_screen
-    printf "\e[8;30;120t"
+    printf "\e[8;50;120t"
   end
 
   def check_password
