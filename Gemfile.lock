@@ -17,7 +17,10 @@ GEM
     arel (7.1.4)
     bcrypt (3.1.11)
     coderay (1.1.1)
+    colored (1.2)
     colorize (0.8.1)
+    command_line_reporter (4.0.0)
+      colored (>= 1.2)
     concurrent-ruby (1.0.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
@@ -68,6 +71,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   colorize
+  command_line_reporter
   http
   json
   launchy

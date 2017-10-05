@@ -22,7 +22,7 @@ class CLI
   end
 
   def welcome
-    puts "Welcome to the Flatiron School Lunch Pal".colorize(:cyan)
+    puts "Welcome to the Flatiron School Lunch Pal"
   end
 
   def get_username_from_user
@@ -128,11 +128,8 @@ class CLI
   end
 
   def list_out_options(response, header)
-    # puts "Found #{response["total"]} businesses within #{DEFAULT_RADIUS} meters. Listing #{SEARCH_LIMIT}:"
-    puts "
-    #{header}
-    "
-    response["businesses"].each_with_index {|biz,i| puts "#{i+1}. #{biz['name']}  //  #{biz['price']}  //  #{biz['location']['address1']}"}
+    puts header
+    puts Example.new.yelp_table(response)
   end
 
   def find_or_create_restaurant_object(response)
@@ -174,13 +171,6 @@ class CLI
   end
 
   def explore_flatiron_students(array)
-    # puts "
-    # Choose from the list above, enter your own search term to explore other options, or enter 'back' to return to the main menu."
-    # input = get_input_from_user
-    #
-    #
-    # (1..SEARCH_LIMIT).to_a.include?(input.to_i) ? find_or_create_restaurant_object(response["businesses"]) : search_yelp(input)
-
     msg = <<-MSG
 
       Choose from the list above to join a classmate, enter 'search people' to explore people, enter 'browse restaurants' to explore restaurants, and as always, enter 'back' to return to the main menu.
