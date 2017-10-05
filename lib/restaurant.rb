@@ -19,8 +19,5 @@ class Restaurant < ActiveRecord::Base
     }
   end
 
-  def self.make_brought
-    
-  end
 
 end

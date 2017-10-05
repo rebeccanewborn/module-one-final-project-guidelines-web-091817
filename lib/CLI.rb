@@ -15,7 +15,7 @@ class CLI
     first = get_choice
     @rest_obj = navigate_to_first_choice(first)
     person.add_lunch(rest_obj)
-    end_app(rest_obj)
+    rest_obj.name == "Brought Lunch" ? end_app_brought(rest_obj, person) : end_app(rest_obj)
   end
 
   def first_login_today?
@@ -228,10 +228,7 @@ class CLI
   end
 
   def brought_lunch
-    rest = Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
-    puts "Here are the other people who have also brought lunch today:"
-    Lunch.display_all_brought_lunches_today(rest)
-    rest
+    Restaurant.find_or_create_by(name: "Brought Lunch")
   end
 
   def clear_null_data
@@ -242,8 +239,14 @@ class CLI
     clear_screen
     puts "You picked #{lunch.name} located at #{lunch.address}."
     puts "We hope you enjoy your lunch! Check out #{lunch.name}'s Yelp page now!'"
-    binding.pry
     sleep 5
     Launchy.open(rest_obj.url)
+  end
+
+  def end_app_brought(rest_obj, person)
+    clear_screen
+    puts "You have brought your own lunch today.
+Here are other people who also brought lunch today:"
+    Lunch.display_all_brought_lunches_today(rest_obj, person)
   end
 end

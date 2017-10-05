@@ -25,9 +25,9 @@ class Lunch < ActiveRecord::Base
     }
   end
 
-  def self.display_all_brought_lunches_today(restaurant)
+  def self.display_all_brought_lunches_today(restaurant, person)
     all.where(:restaurant_id => restaurant.id, :datetime => Date.today).each { |lunch|
-      puts lunch.person.name
+      puts lunch.person.name if lunch.person_id != person.id
     }
   end
 
