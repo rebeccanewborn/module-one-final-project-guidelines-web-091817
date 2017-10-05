@@ -70,9 +70,16 @@ class CLI
   end
 
   def create_new_user(name)
+    cohort = get_cohort
     password = create_password
-    @person = Person.create(name: name, password: password.to_s)
+    @person = Person.create(name: name, password: password.to_s, cohort: cohort)
     menu
+  end
+
+  def get_cohort
+    puts "Please enter your cohort. For example, 'web-091817'."
+    cohort_input = gets.chomp
+    Cohort.find_or_create_by(name: cohort_input)
   end
 
   def create_password
@@ -204,7 +211,8 @@ class CLI
   end
 
   def see_what_classmates_are_eating_today
-    rest_array = Lunch.display_all_today_lunches
+    puts "Here are all the places students in your cohort are eating today:"
+    rest_array = Lunch.display_all_today_lunches(person.cohort)
   end
 
   def search_by_classmate
