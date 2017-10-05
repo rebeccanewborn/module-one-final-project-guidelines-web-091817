@@ -3,10 +3,12 @@ class Lunch < ActiveRecord::Base
   belongs_to :restaurant
 
   def self.display_all_today_lunches
-    all.where(datetime: Date.today).map.with_index { |lunch,i|
-      puts "#{i+1}. #{lunch.person.name} // #{lunch.restaurant.name} // #{lunch.restaurant.address} // #{lunch.restaurant.price}"
-      lunch.restaurant
-    }
+    # .map.with_index { |lunch,i|
+    Table.new.all_today_lunches_table(all.where(datetime: Date.today))
+    #   puts Table.all_today_lunches_table(response)
+    #   lunch.restaurant
+    # }
+    all.where(datetime: Date.today).map { |lunch| lunch.restaurant }
   end
 
   def self.display_all_recent_lunches
@@ -20,6 +22,12 @@ class Lunch < ActiveRecord::Base
     all.where(person_id: person.id).map.with_index { |lunch, i|
       puts "#{i+1}. #{lunch.restaurant.name}"
       lunch.restaurant
+    }
+  end
+
+  def self.display_all_brought_lunches_today(restaurant)
+    all.where(:restaurant_id => restaurant.id, :datetime => Date.today).each { |lunch|
+      puts lunch.person.name
     }
   end
 

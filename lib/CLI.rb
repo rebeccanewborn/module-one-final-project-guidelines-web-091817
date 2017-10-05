@@ -2,6 +2,7 @@ class CLI
   attr_accessor :person, :rest_obj
 
   def run
+    CLI.resize_screen
     Restaurant.update_all today_popularity: 0 if first_login_today?
     clear_screen
     welcome
@@ -42,7 +43,7 @@ class CLI
 
   def ask_user(user_input)
     clear_screen
-    puts "It seems that #{user_input} has not been registered yet!".colorize(:light_red)
+    puts "It seems that #{user_input} has not been registered yet!"
     puts "Press 1 to create an account or press anything else to go back."
     user_choice = gets.chomp
     user_choice == "1" ? create_new_user(user_input) : run
@@ -50,6 +51,10 @@ class CLI
 
   def clear_screen
     puts "\e[H\e[2J"
+  end
+
+  def self.resize_screen
+    printf "\e[8;50;120t"
   end
 
   def check_password
@@ -60,7 +65,7 @@ class CLI
   end
 
   def try_again
-    puts "That password is incorrect".colorize(:red)
+    puts "That password is incorrect"
     check_password
   end
 
@@ -110,7 +115,7 @@ class CLI
     when "back" || "return"
       run
     else
-      puts "Whoooooooops!".colorize(:light_red)
+      puts "Whoooooooops!"
       menu
     end
   end
@@ -129,7 +134,7 @@ class CLI
 
   def list_out_options(response, header)
     puts header
-    puts Example.new.yelp_table(response)
+    puts Table.new.yelp_table(response)
   end
 
   def find_or_create_restaurant_object(response)
@@ -223,7 +228,10 @@ class CLI
   end
 
   def brought_lunch
-    Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
+    rest = Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
+    puts "Here are the other people who have also brought lunch today:"
+    Lunch.display_all_brought_lunches_today(rest)
+    rest
   end
 
   def clear_null_data
@@ -234,6 +242,7 @@ class CLI
     clear_screen
     puts "You picked #{lunch.name} located at #{lunch.address}."
     puts "We hope you enjoy your lunch! Check out #{lunch.name}'s Yelp page now!'"
+    binding.pry
     sleep 5
     Launchy.open(rest_obj.url)
   end
