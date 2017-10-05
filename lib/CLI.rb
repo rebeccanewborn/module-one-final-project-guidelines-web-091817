@@ -235,7 +235,9 @@ class CLI
 
   def brought_lunch
     rest = Restaurant.find_or_create_by(name: "Brought Lunch", rating: 5.0, price: "$", address: "Flatiron School", url: "www.yelp.com")
-    Lunch.display_all_brought_lunches(rest)
+    puts "Here are the other people who have also brought lunch today:"
+    Lunch.display_all_brought_lunches_today(rest)
+    rest
   end
 
   def clear_null_data
