@@ -27,11 +27,11 @@ This project relies on the following Gems:
 
 The program starts by prompting the user to enter their name and cohort:
 
-![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/opening.png | width=100)
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/opening.png)
 
 After identifying that the user name is on record the user will be prompted to enter their password. Passwords are obscured and hidden from the terminal and are then stored using BCrypt to ensure that our database doesn't store an easily accessible string of everyone's passwords.
 
-![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/password.png | width=100)
+![Logo](https://github.com/rebeccanewborn/module-one-final-project-guidelines-web-091817/raw/master/img/password.png)
 
 Successful logins take the user the menu where they can choose to:
 
